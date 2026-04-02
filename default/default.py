@@ -35,7 +35,7 @@ def init(api):
     def do_exit(arg):
         print(f"[AI] 退出程序")
         do = input("确定要退出程序吗？(y/[n]) ").lower()
-        if do:
+        if do == "y":
             exit()
         else:
             return "用户拒绝退出。"
