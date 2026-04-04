@@ -47,7 +47,9 @@ jobs:
       - name: 上传构建产物
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.inputs.release_tag }}
           files: |
             Hklaw-*/*
+          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

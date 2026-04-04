@@ -32,13 +32,19 @@ class API:
         return decorator
 
 class Agent:
+    def get_resource(self, path):
+        if getattr(sys, 'frozen', False):
+            return Path(sys._MEIPASS) / path
+        else:
+            return path
+        
     def __init__(self):
         self.main_path = Path("agent")
         self.skills_path = self.main_path / "skills"
         self.config_path = self.main_path / "config.json"
         if not self.main_path.is_dir():
             self.main_path.mkdir()
-            shutil.copytree(Path("default"), self.skills_path)
+            shutil.copytree(get_resource(Path("default")), self.skills_path)
             with open(self.config_path, "w") as f:
                 json.dump({"key": "", "url": "", "model": ""}, f, indent=4)
             print("请修改配置文件（/agent/config.json）后继续")
