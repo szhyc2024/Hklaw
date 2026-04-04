@@ -16,7 +16,7 @@ jobs:
           python-version: '3.14'
       - name: 安装依赖
         run: |
-          cd $ {{ github.workspace }}
+          ls
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
