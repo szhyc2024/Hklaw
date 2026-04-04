@@ -32,10 +32,12 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           pyinstaller --onefile --add-data "default;default" agent.py
+          ren dist\agent.exe Hklaw-${{ matrix.os }}-${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.release_tag }}.exe
       - name: 构建 Linux 和 macOS 可执行文件
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
         run: |
           pyinstaller --onefile --add-data "default:default" agent.py
+          mv dist/agent Hklaw-${{ matrix.os }}-${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.release_tag }}
       - name: 上传构建产物
         uses: actions/upload-artifact@v4
         with:
