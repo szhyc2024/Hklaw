@@ -44,7 +44,7 @@ class Agent:
         self.config_path = self.main_path / "config.json"
         if not self.main_path.is_dir():
             self.main_path.mkdir()
-            shutil.copytree(get_resource(Path("default")), self.skills_path)
+            shutil.copytree(self.get_resource(Path("default")), self.skills_path)
             with open(self.config_path, "w") as f:
                 json.dump({"key": "", "url": "", "model": ""}, f, indent=4)
             print("请修改配置文件（/agent/config.json）后继续")

@@ -37,7 +37,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
         run: |
           pyinstaller --onefile --add-data "default:default" agent.py
-          mv dist/agent Hklaw-${{ matrix.os }}-${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.release_tag }}
+          mv dist/agent dist/Hklaw-${{ matrix.os }}-${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.release_tag }}
       - name: 上传构建产物
         uses: actions/upload-artifact@v4
         with:
