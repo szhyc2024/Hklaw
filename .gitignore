@@ -1,3 +1,5 @@
 .git
 __pycache__
 agent
+.venv
+uv.lock

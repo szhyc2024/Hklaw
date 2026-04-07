@@ -32,30 +32,33 @@ class API:
         return decorator
 
 class Agent:
-    def get_resource(self, path):
-        if getattr(sys, 'frozen', False):
-            return Path(sys._MEIPASS) / path
-        else:
-            return path
-        
     def __init__(self):
         self.main_path = Path("agent")
         self.skills_path = self.main_path / "skills"
         self.config_path = self.main_path / "config.json"
+        self.history_path = self.main_path / "history.json"
         if not self.main_path.is_dir():
-            self.main_path.mkdir()
-            shutil.copytree(self.get_resource(Path("default")), self.skills_path)
-            with open(self.config_path, "w") as f:
-                json.dump({"key": "", "url": "", "model": ""}, f, indent=4)
-            print("请修改配置文件（/agent/config.json）后继续")
+            shutil.copytree(self.get_resource(Path("default")), self.main_path)
+            print("请修改配置文件 /agent/config.json 后继续")
             exit()
-        self.messages = []
+        with open(self.history_path, "r") as f:
+            self.messages = json.load(f)
         self.skills = {}
         with open(self.config_path) as f:
             self.configs = json.load(f)
         self.client = OpenAI(api_key=self.configs["key"], base_url=self.configs["url"])
         self.model = self.configs["model"]
         self.api = API(self)
+
+    def save_history(self):
+        with open(self.history_path, "w") as f:
+            json.dump(self.messages, f, ensure_ascii=False, indent=4)
+
+    def get_resource(self, path):
+        if getattr(sys, 'frozen', False):
+            return Path(sys._MEIPASS) / path
+        else:
+            return path
             
     def import_skills(self):
         sys.path.append(str(self.skills_path))
@@ -77,6 +80,7 @@ class Agent:
             messages=self.messages,
         )
         self.api.tokens += response.usage.total_tokens
+        self.save_history()
         return response.choices[0].message.content
 
     def agent_loop(self, answer):
